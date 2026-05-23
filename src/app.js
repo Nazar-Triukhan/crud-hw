@@ -60,6 +60,8 @@ function updateStudent(id) {
 
 
 
+
+ 
 // Функція для видалення студента
 
 function deleteStudent(id) {
