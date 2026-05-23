@@ -1,0 +1,30 @@
+{
+  "name": "crud-hw",
+  "version": "1.0.0",
+  "description": "",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "scripts": {
+    "dev": "npx parcel src/index.html",
+    "build": "parcel build src/index.html --public-url /crud-hw/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "server": "json-server students.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nazar-Triukhan/crud-hw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nazar-Triukhan/crud-hw/issues"
+  },
+  "homepage": "https://github.com/Nazar-Triukhan/crud-hw#readme",
+  "devDependencies": {
+    "parcel": "^2.16.4"
+  },
+  "dependencies": {
+    "json-server": "^1.0.0-beta.15"
+  }
+}
