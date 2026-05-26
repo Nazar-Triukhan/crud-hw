@@ -207,11 +207,11 @@
       });
     }
   }
-})({"jQCk7":[function(require,module,exports,__globalThis) {
+})({"7wZbQ":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
-var HMR_SERVER_PORT = 58287;
+var HMR_SERVER_PORT = 1234;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "439701173a9199ea";
 var HMR_USE_SSE = false;
@@ -714,43 +714,150 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"2R06K":[function(require,module,exports,__globalThis) {
-const listRef = document.querySelector('.list');
-const btnRef = document.getElementById('get-students-btn');
-// Функція для отримання всіх студентів
-function getStudents() {
-    return fetch('http://localhost:3000/students').then((res)=>res.json());
-}
-// Функція для відображення студентів у таблиці
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _getStudents = require("./api/getStudents");
+var _getStudentsDefault = parcelHelpers.interopDefault(_getStudents);
+var _postStudents = require("./api/postStudents");
+var _postStudentsDefault = parcelHelpers.interopDefault(_postStudents);
+var _deletStudents = require("./api/deletStudents");
+var _deletStudentsDefault = parcelHelpers.interopDefault(_deletStudents);
+var _updateStudents = require("./api/updateStudents");
+var _updateStudentsDefault = parcelHelpers.interopDefault(_updateStudents);
+const listRef = document.querySelector(".list");
+const btnRef = document.getElementById("get-students-btn");
+const formRef = document.getElementById("add-student-form");
+let curentID = null;
+(0, _getStudentsDefault.default)().then((res)=>renderStudents(res));
 function renderStudents(students) {
     const item = students.map(({ id, name, age, course, skills, email, isEnrolled })=>{
-        return `<tr><td>${id}</td>
+        return `<tr id="${id}"><td>${id}</td>
     <td>${name}</td>
     <td>${age}</td>
     <td>${course}</td>
     <td>${skills}</td>
     <td>${email}</td>
     <td>${isEnrolled}</td> 
-    <td></td>
+    <td>
+        <button type="button" class="btn_remove" data-action="remove">\u{432}\u{438}\u{434}\u{430}\u{43B}\u{438}\u{442}\u{438}</button>
+    <button type="button" class="btn_edit" data-action="edit">\u{440}\u{435}\u{434}\u{430}\u{433}\u{443}\u{432}\u{430}\u{442}\u{438}</button></td>
     </tr>`;
-    }).join('');
+    }).join("");
     listRef.innerHTML = item;
 }
-// Функція для додавання нового студента
-function addStudent(e) {
-// твій код
-}
-// Функція для оновлення студента
-function updateStudent(id) {
-// твій код
-}
-// Функція для видалення студента
-function deleteStudent(id) {
-// твій код
-}
-btnRef.addEventListener('click', ()=>{
-    getStudents().then((res)=>renderStudents(res));
+formRef.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const data = {
+        name: e.currentTarget.elements[0].value,
+        age: e.currentTarget.elements[1].value,
+        course: e.currentTarget.elements[2].value,
+        skills: e.currentTarget.elements[3].value,
+        email: e.currentTarget.elements[4].value,
+        isEnrolled: e.currentTarget.elements[5].checked
+    };
+    if (curentID === null) (0, _postStudentsDefault.default)(data).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
+    (0, _updateStudentsDefault.default)(curentID, data).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
+    formRef.reset();
+});
+listRef.addEventListener("click", (e)=>{
+    const action = e.target.dataset.action;
+    const td = e.target.closest("tr");
+    const id = td.id;
+    if (action === "remove") {
+        (0, _deletStudentsDefault.default)(id).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
+        return;
+    }
+    if (action === 'edit') {
+        curentID = id;
+        formRef.elements[0].value = td.querySelectorAll('td')[1].textContent;
+        formRef.elements[1].value = td.querySelectorAll('td')[2].textContent;
+        formRef.elements[2].value = td.querySelectorAll('td')[3].textContent;
+        formRef.elements[3].value = td.querySelectorAll('td')[4].textContent;
+        formRef.elements[4].value = td.querySelectorAll('td')[5].textContent;
+        formRef.elements[5].checked = td.querySelectorAll('td')[6].textContent === 'true' ? true : false;
+    }
+});
+btnRef.addEventListener("click", ()=>{
+    (0, _getStudentsDefault.default)().then((res)=>renderStudents(res));
 });
 
-},{}]},["jQCk7","2R06K"], "2R06K", "parcelRequire357b", {})
+},{"./api/getStudents":"461i0","./api/postStudents":"aVyB2","./api/deletStudents":"29NLS","./api/updateStudents":"e9J9x","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"461i0":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>getStudents);
+function getStudents() {
+    return fetch('http://localhost:3000/students').then((res)=>res.json());
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"aVyB2":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>postStudents);
+function postStudents(data) {
+    const options = {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    };
+    return fetch(`http://localhost:3000/students`, options).then((res)=>res.json());
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"29NLS":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>deleteStudent);
+function deleteStudent(id) {
+    return fetch(`http://localhost:3000/students/${id}`, {
+        method: 'DELETE'
+    }).then((res)=>res.json());
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"e9J9x":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>updateStudent);
+function updateStudent(id, postToUpdate) {
+    const options = {
+        method: "PATCH",
+        body: JSON.stringify(postToUpdate),
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    };
+    return fetch(`http://localhost:3000/students/${id}`, options).then((res)=>res.json());
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["7wZbQ","2R06K"], "2R06K", "parcelRequire357b", {})
 
 //# sourceMappingURL=crud-hw.0f77c784.js.map
