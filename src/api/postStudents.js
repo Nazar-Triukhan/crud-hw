@@ -1,4 +1,4 @@
-export default function postStudents (data) {
+export default async function postStudents (data) {
 const options = {
 method: "POST",
 body: JSON.stringify(data),
@@ -6,5 +6,6 @@ headers: {
 "Content-Type": "application/json; charset=UTF-8",
 },
 };
-    return fetch(`http://localhost:3000/students`, options).then(res => res.json())
+    const res = await fetch(`http://localhost:3000/students`, options)
+    return res.json()
 }

@@ -1,4 +1,4 @@
-export default function updateStudent(id, postToUpdate) {
+export default async function updateStudent(id, postToUpdate) {
 const options = {
 method: "PATCH",
 body: JSON.stringify(postToUpdate),
@@ -7,5 +7,7 @@ headers: {
 },
 
 };
-    return fetch(`http://localhost:3000/students/${id}`, options).then(res => res.json())
+    const res = await fetch(`http://localhost:3000/students/${id}`, options)
+    
+    return res.json()
 }

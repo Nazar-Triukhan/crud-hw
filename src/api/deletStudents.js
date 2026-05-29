@@ -1,7 +1,8 @@
-export default function deleteStudent(id) {
+export default async function deleteStudent(id) {
 
-    return fetch(`http://localhost:3000/students/${id}`,{
+    const res = await fetch(`http://localhost:3000/students/${id}`,{
         method: 'DELETE',
-    }).then(res => res.json())
+    })
+    return res.json()
 
 }

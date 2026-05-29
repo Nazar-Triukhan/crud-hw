@@ -8,7 +8,12 @@ import updateStudent from "./api/updateStudents";
 
 let curentID = null
 
-getStudents().then((res) => renderStudents(res));
+async function init() {
+    const res = await getStudents()
+    renderStudents(res)
+}
+init()
+// getStudents().then((res) => renderStudents(res));
 
 function renderStudents(students) {
   const item = students
@@ -30,7 +35,7 @@ function renderStudents(students) {
   listRef.innerHTML = item;
 }
 
-formRef.addEventListener("submit", (e) => {
+formRef.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = {
     name: e.currentTarget.elements[0].value,
@@ -41,25 +46,35 @@ formRef.addEventListener("submit", (e) => {
     isEnrolled: e.currentTarget.elements[5].checked,
   };
   if(curentID === null){
-  postStudents(data)
-    .then(getStudents)
-    .then((res) => renderStudents(res));
+    await postStudents(data)
+    const res = await getStudents()
+    renderStudents(res)
+//   postStudents(data)
+//     .then(getStudents)
+//     .then((res) => renderStudents(res));
+  } else {
+    await updateStudent(curentID, data)
+    const res = await getStudents()
+    renderStudents(res)
+//   updateStudent(curentID, data).then(getStudents).then(res => renderStudents(res))
   }
 
-  updateStudent(curentID, data).then(getStudents).then(res => renderStudents(res))
 
   formRef.reset();
 });
 
-listRef.addEventListener("click", (e) => {
+listRef.addEventListener("click", async (e) => {
   const action = e.target.dataset.action;
   const td = e.target.closest("tr");
   const id = td.id;
 
   if (action === "remove") {
-    deleteStudent(id)
-      .then(getStudents)
-      .then((res) => renderStudents(res));
+    await deleteStudent(id)
+    const res = await getStudents()
+    renderStudents(res)
+    // deleteStudent(id)
+    //   .then(getStudents)
+    //   .then((res) => renderStudents(res));
     return;
   }
 
@@ -75,5 +90,6 @@ listRef.addEventListener("click", (e) => {
 });
 
 btnRef.addEventListener("click", () => {
-  getStudents().then((res) => renderStudents(res));
+    init()
+//   getStudents().then((res) => renderStudents(res));
 });

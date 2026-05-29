@@ -1,5 +1,6 @@
-export default function getStudents() {
+export default async function getStudents() {
 
-    return fetch('http://localhost:3000/students').then(res => res.json())
+    const res = await fetch('http://localhost:3000/students')
+    return res.json()
 
  }
