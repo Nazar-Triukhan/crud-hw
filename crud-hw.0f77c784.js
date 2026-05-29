@@ -727,7 +727,12 @@ const listRef = document.querySelector(".list");
 const btnRef = document.getElementById("get-students-btn");
 const formRef = document.getElementById("add-student-form");
 let curentID = null;
-(0, _getStudentsDefault.default)().then((res)=>renderStudents(res));
+async function init() {
+    const res = await (0, _getStudentsDefault.default)();
+    renderStudents(res);
+}
+init();
+// getStudents().then((res) => renderStudents(res));
 function renderStudents(students) {
     const item = students.map(({ id, name, age, course, skills, email, isEnrolled })=>{
         return `<tr id="${id}"><td>${id}</td>
@@ -744,7 +749,7 @@ function renderStudents(students) {
     }).join("");
     listRef.innerHTML = item;
 }
-formRef.addEventListener("submit", (e)=>{
+formRef.addEventListener("submit", async (e)=>{
     e.preventDefault();
     const data = {
         name: e.currentTarget.elements[0].value,
@@ -754,16 +759,32 @@ formRef.addEventListener("submit", (e)=>{
         email: e.currentTarget.elements[4].value,
         isEnrolled: e.currentTarget.elements[5].checked
     };
-    if (curentID === null) (0, _postStudentsDefault.default)(data).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
-    (0, _updateStudentsDefault.default)(curentID, data).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
+    if (curentID === null) {
+        await (0, _postStudentsDefault.default)(data);
+        const res = await (0, _getStudentsDefault.default)();
+        renderStudents(res);
+    //   postStudents(data)
+    //     .then(getStudents)
+    //     .then((res) => renderStudents(res));
+    } else {
+        await (0, _updateStudentsDefault.default)(curentID, data);
+        const res = await (0, _getStudentsDefault.default)();
+        renderStudents(res);
+    //   updateStudent(curentID, data).then(getStudents).then(res => renderStudents(res))
+    }
     formRef.reset();
 });
-listRef.addEventListener("click", (e)=>{
+listRef.addEventListener("click", async (e)=>{
     const action = e.target.dataset.action;
     const td = e.target.closest("tr");
     const id = td.id;
     if (action === "remove") {
-        (0, _deletStudentsDefault.default)(id).then((0, _getStudentsDefault.default)).then((res)=>renderStudents(res));
+        await (0, _deletStudentsDefault.default)(id);
+        const res = await (0, _getStudentsDefault.default)();
+        renderStudents(res);
+        // deleteStudent(id)
+        //   .then(getStudents)
+        //   .then((res) => renderStudents(res));
         return;
     }
     if (action === 'edit') {
@@ -777,15 +798,17 @@ listRef.addEventListener("click", (e)=>{
     }
 });
 btnRef.addEventListener("click", ()=>{
-    (0, _getStudentsDefault.default)().then((res)=>renderStudents(res));
+    init();
+//   getStudents().then((res) => renderStudents(res));
 });
 
 },{"./api/getStudents":"461i0","./api/postStudents":"aVyB2","./api/deletStudents":"29NLS","./api/updateStudents":"e9J9x","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"461i0":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>getStudents);
-function getStudents() {
-    return fetch('http://localhost:3000/students').then((res)=>res.json());
+async function getStudents() {
+    const res = await fetch('http://localhost:3000/students');
+    return res.json();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
@@ -822,7 +845,7 @@ exports.export = function(dest, destName, get) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>postStudents);
-function postStudents(data) {
+async function postStudents(data) {
     const options = {
         method: "POST",
         body: JSON.stringify(data),
@@ -830,24 +853,26 @@ function postStudents(data) {
             "Content-Type": "application/json; charset=UTF-8"
         }
     };
-    return fetch(`http://localhost:3000/students`, options).then((res)=>res.json());
+    const res = await fetch(`http://localhost:3000/students`, options);
+    return res.json();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"29NLS":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>deleteStudent);
-function deleteStudent(id) {
-    return fetch(`http://localhost:3000/students/${id}`, {
+async function deleteStudent(id) {
+    const res = await fetch(`http://localhost:3000/students/${id}`, {
         method: 'DELETE'
-    }).then((res)=>res.json());
+    });
+    return res.json();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"e9J9x":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>updateStudent);
-function updateStudent(id, postToUpdate) {
+async function updateStudent(id, postToUpdate) {
     const options = {
         method: "PATCH",
         body: JSON.stringify(postToUpdate),
@@ -855,7 +880,8 @@ function updateStudent(id, postToUpdate) {
             "Content-Type": "application/json; charset=UTF-8"
         }
     };
-    return fetch(`http://localhost:3000/students/${id}`, options).then((res)=>res.json());
+    const res = await fetch(`http://localhost:3000/students/${id}`, options);
+    return res.json();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["7wZbQ","2R06K"], "2R06K", "parcelRequire357b", {})
